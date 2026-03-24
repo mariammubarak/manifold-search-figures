@@ -30,13 +30,14 @@ def plot_shortcut_vs_geodesic(X, source, target, path_nodes, save_path):
         [p[0], q[0]],
         [p[1], q[1]],
         [p[2], q[2]],
-        linewidth=2.0,
+        color="#1f77b4",
+        linewidth=1.8,
         linestyle="--",
-        alpha=0.85,
+        alpha=0.7,
         zorder=3
     )
 
-    # --- graph geodesic path: draw as small consecutive segments ---
+        # --- graph geodesic path: draw as small consecutive segments in one color ---
     for a, b in zip(path_nodes[:-1], path_nodes[1:]):
         xa = X[a]
         xb = X[b]
@@ -44,7 +45,8 @@ def plot_shortcut_vs_geodesic(X, source, target, path_nodes, save_path):
             [xa[0], xb[0]],
             [xa[1], xb[1]],
             [xa[2], xb[2]],
-            linewidth=2.4,
+            color="#d62728",
+            linewidth=2.2,
             alpha=0.95,
             solid_capstyle="round",
             zorder=4
@@ -73,7 +75,7 @@ def plot_shortcut_vs_geodesic(X, source, target, path_nodes, save_path):
         zorder=6
     )
 
-    ax.set_title("Euclidean Shortcut vs Manifold Path", pad=14, fontsize=15)
+    ax.set_title("Euclidean Shortcut vs Manifold Path", pad=10, fontsize=13)
 
     ax.set_xticks([])
     ax.set_yticks([])
