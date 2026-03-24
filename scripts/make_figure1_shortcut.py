@@ -1,5 +1,10 @@
 from src.manifolds import generate_swiss_roll
-from src.graphs import build_knn_graph, pick_far_points, shortest_path_nodes
+from src.graphs import (
+    build_knn_graph,
+    pick_far_points,
+    shortest_path_nodes,
+    sample_background_edges,
+)
 from src.plotting import plot_shortcut_vs_geodesic
 
 
@@ -20,12 +25,16 @@ def main():
     # Step 4: compute graph shortest path
     path_nodes = shortest_path_nodes(G, source, target)
 
-    # Step 5: save figure
+    # Step 5: get faint background graph structure
+    background_edges = sample_background_edges(G, max_edges=900)
+
+    # Step 6: save figure
     plot_shortcut_vs_geodesic(
         X=X,
         source=source,
         target=target,
         path_nodes=path_nodes,
+        background_edges=background_edges,
         save_path="figures/figure1_shortcut.png"
     )
 
