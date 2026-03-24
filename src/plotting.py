@@ -78,7 +78,7 @@ def plot_graph_path_panel(X, G, source, target, path_nodes, save_path, max_edges
         zorder=6
     )
 
-    ax.set_title("Neighborhood Graph and Shortest Path", pad=10, fontsize=13)
+    # ax.set_title("Neighborhood Graph and Shortest Path", pad=10, fontsize=13)
 
     ax.set_xticks([])
     ax.set_yticks([])
