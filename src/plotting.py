@@ -2,83 +2,96 @@ import os
 import matplotlib.pyplot as plt
 
 
-def plot_shortcut_vs_geodesic(X, source, target, path_nodes, save_path):
+def plot_shortcut_vs_geodesic(X, source, target, path_nodes, background_edges, save_path):
     """
     Plot:
-    - all swiss roll points
-    - straight Euclidean segment between source and target
-    - graph shortest path along the manifold
+    - faint local graph structure in the background
+    - subtle point cloud
+    - straight Euclidean shortcut
+    - highlighted graph geodesic path
     """
 
-    fig = plt.figure(figsize=(8.4, 6.4))
+    fig = plt.figure(figsize=(8.8, 6.6))
     ax = fig.add_subplot(111, projection="3d")
 
-    # Background manifold: lighter and quieter
+    # --- faint local graph structure ---
+    for i, j in background_edges:
+        xi, xj = X[i], X[j]
+        ax.plot(
+            [xi[0], xj[0]],
+            [xi[1], xj[1]],
+            [xi[2], xj[2]],
+            linewidth=1.0,
+            alpha=0.22,
+            zorder=1
+        )
+
+    # --- subtle point cloud ---
     ax.scatter(
         X[:, 0], X[:, 1], X[:, 2],
-        s=7,
-        alpha=0.12
+        s=5,
+        alpha=0.22,
+        depthshade=False,
+        zorder=2
     )
 
-    # Selected points
     p = X[source]
     q = X[target]
 
-    # Euclidean shortcut: quieter
+    # --- Euclidean shortcut: quiet comparison object ---
     ax.plot(
         [p[0], q[0]],
         [p[1], q[1]],
         [p[2], q[2]],
         linewidth=2.2,
         linestyle="--",
-        alpha=0.9
+        alpha=0.95,
+        zorder=4
     )
 
-    # Graph geodesic path: main visual object
+    # --- graph geodesic path: main route through the manifold ---
     path_xyz = X[path_nodes]
     ax.plot(
         path_xyz[:, 0],
         path_xyz[:, 1],
         path_xyz[:, 2],
-        linewidth=3.2,
+        linewidth=2.8,
+        alpha=0.98,
         solid_capstyle="round",
-        solid_joinstyle="round"
+        solid_joinstyle="round",
+        zorder=5
     )
 
-    # Source and target markers:
-    # black ring underlay + smaller colored fill for a cleaner paper look
+    # --- black ring + colored fill markers ---
     ax.scatter(
         [p[0], q[0]],
         [p[1], q[1]],
         [p[2], q[2]],
-        s=140,
+        s=170,
         c="black",
         depthshade=False,
-        zorder=5
+        zorder=6
     )
     ax.scatter(
         p[0], p[1], p[2],
-        s=58,
+        s=62,
         depthshade=False,
-        zorder=6
+        zorder=7
     )
     ax.scatter(
         q[0], q[1], q[2],
-        s=58,
+        s=62,
         depthshade=False,
-        zorder=6
+        zorder=7
     )
 
-    # Cleaner title
     ax.set_title("Euclidean Shortcut vs Manifold Path", pad=14, fontsize=15)
 
-    # Remove ticks
     ax.set_xticks([])
     ax.set_yticks([])
     ax.set_zticks([])
-
-    # Remove grid and soften panes
     ax.grid(False)
+
     try:
         ax.xaxis.pane.fill = False
         ax.yaxis.pane.fill = False
@@ -89,16 +102,13 @@ def plot_shortcut_vs_geodesic(X, source, target, path_nodes, save_path):
     except Exception:
         pass
 
-    # Slightly tighter/calm view
     ax.view_init(elev=20, azim=-63)
 
-    # Make axes box feel less tall/heavy
     try:
         ax.set_box_aspect((1.45, 1.2, 0.8))
     except Exception:
         pass
 
-    # No legend: cleaner paper-like composition
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.tight_layout()
     plt.savefig(save_path, dpi=300, bbox_inches="tight")
