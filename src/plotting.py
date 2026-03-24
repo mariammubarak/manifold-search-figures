@@ -10,62 +10,74 @@ def plot_shortcut_vs_geodesic(X, source, target, path_nodes, save_path):
     - graph shortest path along the manifold
     """
 
-    fig = plt.figure(figsize=(9, 7))
+    fig = plt.figure(figsize=(8.4, 6.4))
     ax = fig.add_subplot(111, projection="3d")
 
-    # Background point cloud: softer and quieter
+    # Background manifold: lighter and quieter
     ax.scatter(
         X[:, 0], X[:, 1], X[:, 2],
-        s=10,
-        alpha=0.18
+        s=7,
+        alpha=0.12
     )
 
-    # Source and target points
+    # Selected points
     p = X[source]
     q = X[target]
 
-    ax.scatter(
-        p[0], p[1], p[2],
-        s=120,
-        label="source",
-        depthshade=False
-    )
-    ax.scatter(
-        q[0], q[1], q[2],
-        s=120,
-        label="target",
-        depthshade=False
-    )
-
-    # Straight Euclidean shortcut
+    # Euclidean shortcut: quieter
     ax.plot(
         [p[0], q[0]],
         [p[1], q[1]],
         [p[2], q[2]],
-        linewidth=2.8,
+        linewidth=2.2,
         linestyle="--",
-        label="Euclidean shortcut"
+        alpha=0.9
     )
 
-    # Graph geodesic path
+    # Graph geodesic path: main visual object
     path_xyz = X[path_nodes]
     ax.plot(
         path_xyz[:, 0],
         path_xyz[:, 1],
         path_xyz[:, 2],
-        linewidth=3.8,
-        label="Graph geodesic path"
+        linewidth=3.2,
+        solid_capstyle="round",
+        solid_joinstyle="round"
+    )
+
+    # Source and target markers:
+    # black ring underlay + smaller colored fill for a cleaner paper look
+    ax.scatter(
+        [p[0], q[0]],
+        [p[1], q[1]],
+        [p[2], q[2]],
+        s=140,
+        c="black",
+        depthshade=False,
+        zorder=5
+    )
+    ax.scatter(
+        p[0], p[1], p[2],
+        s=58,
+        depthshade=False,
+        zorder=6
+    )
+    ax.scatter(
+        q[0], q[1], q[2],
+        s=58,
+        depthshade=False,
+        zorder=6
     )
 
     # Cleaner title
-    ax.set_title("Euclidean Shortcut vs Manifold Path", pad=18, fontsize=16)
+    ax.set_title("Euclidean Shortcut vs Manifold Path", pad=14, fontsize=15)
 
     # Remove ticks
     ax.set_xticks([])
     ax.set_yticks([])
     ax.set_zticks([])
 
-    # Soften 3D panes/grid feel
+    # Remove grid and soften panes
     ax.grid(False)
     try:
         ax.xaxis.pane.fill = False
@@ -77,16 +89,16 @@ def plot_shortcut_vs_geodesic(X, source, target, path_nodes, save_path):
     except Exception:
         pass
 
-    # Better viewing angle
-    ax.view_init(elev=24, azim=-58)
+    # Slightly tighter/calm view
+    ax.view_init(elev=20, azim=-63)
 
-    # Smaller, cleaner legend
-    ax.legend(
-        loc="upper right",
-        frameon=True,
-        fontsize=11
-    )
+    # Make axes box feel less tall/heavy
+    try:
+        ax.set_box_aspect((1.45, 1.2, 0.8))
+    except Exception:
+        pass
 
+    # No legend: cleaner paper-like composition
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.tight_layout()
     plt.savefig(save_path, dpi=300, bbox_inches="tight")
